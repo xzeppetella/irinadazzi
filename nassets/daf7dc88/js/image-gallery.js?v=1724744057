@@ -1,0 +1,98 @@
+class ImageGallery
+{
+	#id;
+	#images;
+	#currentImageNumber;
+	#imageElement;
+	#captionElement;
+	#container;
+
+	constructor(mode, id, images, currentImageNumber) {
+		this.#id = id;
+
+		if (mode === 'edit') {
+			this.#initEditMode();
+			return;
+		}
+		this.#initPresentationViewMode(images, currentImageNumber);
+	}
+
+	#initEditMode() {
+		document.addEventListener('block.save.done', (event) => {
+			if (event.detail.editBlock.blockId === this.#id && event.detail.editBlock.opened) {
+				event.detail.editBlock.openBlock(event.detail.editBlock.blockId, event.detail.editBlock.place);
+			}
+		});
+	}
+
+	#initPresentationViewMode(images, currentImageNumber) {
+		this.#images = images;
+
+		if (this.#images.length === 0) {
+			return;
+		}
+
+		this.#container = document.getElementById('gallery-presentation-' + this.#id);
+		if (this.#container === null) {
+			return;
+		}
+
+		this.#imageElement = this.#container.querySelector('img.presentation-image');
+		if (this.#imageElement === null) {
+			return;
+		}
+
+		this.#currentImageNumber = this.#prepareCurrentNumber(currentImageNumber);
+
+		this.#captionElement = this.#container.querySelector('.presentation-image-caption');
+
+		this.setCurrentImage(this.#currentImageNumber);
+
+		this.#imageElement.addEventListener('load', () => {
+			setTimeout(() => {this.#imageElement.style.opacity = 1}, 300);
+		});
+
+		let prev = this.#container.querySelector('.presentation-prev');
+		let next = this.#container.querySelector('.presentation-next');
+
+		if (prev !== null) {
+			prev.addEventListener('click', () => {
+				this.setCurrentImage(this.#currentImageNumber - 1);
+			});
+		}
+
+		if (next !== null) {
+			next.addEventListener('click', () => {
+				this.setCurrentImage(this.#currentImageNumber + 1);
+			});
+		}
+	}
+
+	#prepareCurrentNumber(imageNumber) {
+		if (imageNumber >= this.#images.length) {
+			imageNumber = this.#images.length - 1;
+		}
+
+		if (imageNumber < 0 || this.#images[imageNumber] === undefined) {
+			imageNumber = 0;
+		}
+		return imageNumber;
+	}
+
+	setCurrentImage(imageNumber) {
+		let numberToSet = this.#prepareCurrentNumber(imageNumber);
+		if (numberToSet === this.#currentImageNumber) {
+			return;
+		}
+
+		this.#imageElement.style.transition = 'transition: opacity 0.3s,';
+		this.#imageElement.style.opacity = .3;
+
+		this.#currentImageNumber = numberToSet;
+		this.#imageElement.src = this.#images[numberToSet].src;
+
+		if (this.#captionElement !== null) {
+			this.#captionElement.innerHTML = this.#images[numberToSet].caption;
+		}
+	}
+}

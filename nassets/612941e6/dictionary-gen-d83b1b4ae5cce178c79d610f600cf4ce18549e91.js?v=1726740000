@@ -1,0 +1,11 @@
+try{			if (!('fr' in Yii.translate.dictionary)) {
+    			Yii.translate.dictionary['fr'] = {};
+			}
+
+			if (!('fr' in Yii.translate.dbDictionary)) {
+    			Yii.translate.dbDictionary['fr'] = {};
+			}
+
+			Yii.translate.config = {"language":"fr","dbTranslationEnabled":true,"addNewEnabled":false};
+			Yii.translate.dictionary['fr']['widgets'] = [];
+			Yii.translate.dbDictionary['fr']['widgets'] = {"Add files":"Joindre un fichier","Communication":"Communication","New conversation":"Nouvelle conversation","Select file":"T\u00e9l\u00e9charger","Status":"Statut","maximum file size is 100Mb":"la taille maximale du fichier est de 100 Mo","maximum file size is 500Mb":"la taille maximale du fichier est de 500 Mo","\u0421\u0442\u0430\u0442\u0443\u0441":"Statut"};}catch(e){console.log(e)}
